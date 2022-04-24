@@ -1,7 +1,7 @@
-package com.system.carrentalmanagementsystem.service;
+package com.system.carRentalManagementSystem.service;
 
-import com.system.carrentalmanagementsystem.model.Vehicle;
-import com.system.carrentalmanagementsystem.repository.VehicleRepository;
+import com.system.carRentalManagementSystem.model.Vehicle;
+import com.system.carRentalManagementSystem.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,8 +10,12 @@ import java.util.Optional;
 
 @Service
 public class VehicleService {
+    private final VehicleRepository vehicleRepository;
+
     @Autowired
-    private VehicleRepository vehicleRepository;
+    public VehicleService(VehicleRepository vehicleRepository) {
+        this.vehicleRepository = vehicleRepository;
+    }
 
     public List<Vehicle> getAllVehicles() {
         return vehicleRepository.findAll();

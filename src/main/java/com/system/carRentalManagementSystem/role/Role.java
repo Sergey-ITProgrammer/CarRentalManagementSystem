@@ -1,4 +1,4 @@
-package com.system.carrentalmanagementsystem.model;
+package com.system.carRentalManagementSystem.role;
 
 public enum Role {
     USER,

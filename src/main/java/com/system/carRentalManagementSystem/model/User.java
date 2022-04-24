@@ -1,5 +1,6 @@
-package com.system.carrentalmanagementsystem.model;
+package com.system.carRentalManagementSystem.model;
 
+import com.system.carRentalManagementSystem.role.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,7 +27,7 @@ public class User implements Serializable {
 
     @Getter
     @Setter
-    private Role role;
+    private Role role = Role.USER;
 
     @Getter
     @Setter

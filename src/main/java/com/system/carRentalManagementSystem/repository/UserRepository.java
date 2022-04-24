@@ -1,6 +1,6 @@
-package com.system.carrentalmanagementsystem.repository;
+package com.system.carRentalManagementSystem.repository;
 
-import com.system.carrentalmanagementsystem.model.User;
+import com.system.carRentalManagementSystem.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

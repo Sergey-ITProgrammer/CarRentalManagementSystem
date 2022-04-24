@@ -1,4 +1,4 @@
-package com.system.carrentalmanagementsystem.model;
+package com.system.carRentalManagementSystem.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,18 +28,25 @@ public class Booking implements Serializable {
     @JoinColumn(nullable = false)
     private User customerDetails;
 
-//    private Timer timer;
-//
-    private LocalDate date;
+    @Getter
+    private LocalDate startDate;
 
     @Getter
+    private LocalDate endDate;
+
+    @Getter
+    @Setter
     private Boolean driverOptions;
 
-    public Booking(User user, Vehicle vehicle, Boolean driverOptions) {
-        this.customerDetails = user;
-        this.vehicleDetails = vehicle;
+    @Getter
+    @Setter
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinColumn
+    private User driverDetails;
+
+    public Booking(Boolean driverOptions) {
         this.driverOptions = driverOptions;
 
-        this.date = LocalDate.now();
+        this.startDate = LocalDate.now();
     }
 }
