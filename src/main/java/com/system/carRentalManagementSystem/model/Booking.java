@@ -20,13 +20,13 @@ public class Booking implements Serializable {
     @Setter
     @OneToOne(optional = false, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
-    private Vehicle vehicleDetails;
+    private Vehicle vehicle;
 
     @Getter
     @Setter
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private User customerDetails;
+    private User user;
 
     @Getter
     private LocalDate startDate;
@@ -42,11 +42,14 @@ public class Booking implements Serializable {
     @Setter
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn
-    private User driverDetails;
+    private User driver;
 
-    public Booking(Boolean driverOptions) {
+    public Booking(Boolean driverOptions, String endDate) {
         this.driverOptions = driverOptions;
 
         this.startDate = LocalDate.now();
+
+        // PATTERN OF DATE: yyyy-MM-dd
+        this.endDate = LocalDate.parse(endDate);
     }
 }

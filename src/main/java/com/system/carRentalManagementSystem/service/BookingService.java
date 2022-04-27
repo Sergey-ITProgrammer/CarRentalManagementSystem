@@ -33,11 +33,10 @@ public class BookingService {
     }
 
     public List<Booking> getBookingsByUserId(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
+        return bookingRepository.findByUserId(userId);
+    }
 
-        if (user.isPresent()) {
-            return user.get().getBookings().stream().toList();
-        }
+    public Booking getUserBookingById(Long userId, Long bookingId) {
 
         return null;
     }
@@ -47,8 +46,8 @@ public class BookingService {
         Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
 
         if (vehicle.isPresent() && user.isPresent()) {
-            booking.setCustomerDetails(user.get());
-            booking.setVehicleDetails(vehicle.get());
+            booking.setUser(user.get());
+            booking.setVehicle(vehicle.get());
 
             return bookingRepository.save(booking);
         }
@@ -63,9 +62,9 @@ public class BookingService {
             Optional<User> driver = userRepository.findById(driverId);
 
             if (user.isPresent() && vehicle.isPresent() && driver.isPresent() && driver.get().getRole().equals(Role.DRIVER)) {
-                booking.setCustomerDetails(user.get());
-                booking.setVehicleDetails(vehicle.get());
-                booking.setDriverDetails(driver.get());
+                booking.setUser(user.get());
+                booking.setVehicle(vehicle.get());
+                booking.setDriver(driver.get());
 
                 return bookingRepository.save(booking);
             }
@@ -74,25 +73,30 @@ public class BookingService {
         return null;
     }
 
-    public Booking setDriver(Long bookingId, Long driverId) {
-        Optional<User> driver = userRepository.findById(driverId);
+    public Booking setDriver(Long userId, Long bookingId, Long driverId) {
+        Optional<User> user = userRepository.findById(userId);
         Optional<Booking> booking = bookingRepository.findById(bookingId);
+        Optional<User> driver = userRepository.findById(driverId);
 
-        if (driver.isPresent() && booking.isPresent() && driver.get().getRole().equals(Role.DRIVER)) {
-            booking.get().setDriverDetails(driver.get());
-            booking.get().setDriverOptions(true);
+        if (user.isPresent() && booking.isPresent() && driver.isPresent() && driver.get().getRole().equals(Role.DRIVER)) {
+            if (user.get().hasBooking(bookingId)) {
+                booking.get().setDriver(driver.get());
 
-            return bookingRepository.save(booking.get());
+                return bookingRepository.save(booking.get());
+            }
         }
 
         return null;
     }
 
-    public void deleteBooking(Long bookingId) {
+    public void deleteBooking(Long userId, Long bookingId) {
+        Optional<User> user = userRepository.findById(userId);
         Optional<Booking> booking = bookingRepository.findById(bookingId);
 
-        if(booking.isPresent()) {
-            bookingRepository.deleteById(bookingId);
+        if(user.isPresent() && booking.isPresent()) {
+            if (user.get().hasBooking(bookingId)) {
+                bookingRepository.deleteById(bookingId);
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @NoArgsConstructor
 @Entity
@@ -31,7 +32,7 @@ public class User implements Serializable {
 
     @Getter
     @Setter
-    @OneToMany(mappedBy = "customerDetails", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Collection<Booking> bookings = new ArrayList<>();
 
@@ -57,5 +58,18 @@ public class User implements Serializable {
         this.emailAddress = emailAddress;
         this.DOB = DOB;
         this.driverLicence = driverLicence;
+    }
+
+    public Boolean hasBooking(Long bookingId) {
+        boolean hasBooking = false;
+
+        for (Booking booking : getBookings()) {
+            if (booking.getId().equals(bookingId)) {
+                hasBooking = true;
+                break;
+            }
+        }
+
+        return hasBooking;
     }
 }
