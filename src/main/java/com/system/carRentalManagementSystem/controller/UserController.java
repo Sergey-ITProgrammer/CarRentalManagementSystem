@@ -1,124 +1,68 @@
 package com.system.carRentalManagementSystem.controller;
 
 import com.system.carRentalManagementSystem.model.User;
+import com.system.carRentalManagementSystem.modelAssembler.UserModelAssembler;
 import com.system.carRentalManagementSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
+    private final UserModelAssembler modelAssembler;
+
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserModelAssembler modelAssembler) {
         this.userService = userService;
+        this.modelAssembler = modelAssembler;
     }
 
-    @GetMapping("/allUsers")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        EntityModel<User> entityModel = modelAssembler.toModel(userService.getUserById(id));
+
+        if (entityModel.getContent() == null) {
+            return ResponseEntity.badRequest().body("Bad request");
+        }
+
+        return ResponseEntity.ok(entityModel);
     }
 
-    @GetMapping("/users/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    @GetMapping("")
+    public ResponseEntity<?> getUsers() {
+        CollectionModel<EntityModel<User>> entityModels = modelAssembler.toCollectionModel(userService.getUsers());
+
+        return ResponseEntity.ok(entityModels);
     }
 
-    @GetMapping("/drivers/{id}")
-    public User getDriverById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    @PostMapping("")
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+        EntityModel<User> entityModel = modelAssembler.toModel(userService.createUser(user));
+
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
-    @GetMapping("/employees/{id}")
-    public User getEmployeeById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable Long id) {
+        EntityModel<User> entityModel = modelAssembler.toModel(userService.updateUser(user, id));
+
+        if (entityModel.getContent() == null) {
+            return ResponseEntity.badRequest().body("Bad request");
+        }
+
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
-    @GetMapping("/admins/{id}")
-    public User getAdminById(@PathVariable Long id) {
-        return userService.getUserById(id);
-    }
-
-    @GetMapping("/users")
-    public List<User> getUsers() {
-        return userService.getUsers();
-    }
-
-    @GetMapping("/drivers")
-    public List<User> getDrivers() {
-        return userService.getDrivers();
-    }
-
-    @GetMapping("/employees")
-    public List<User> getEmployees() {
-        return userService.getEmployees();
-    }
-
-    @GetMapping("/admins")
-    public List<User> getAdmins() {
-        return userService.getAdmins();
-    }
-
-    @PostMapping("/users")
-    public void createUser(@RequestBody User user) {
-        userService.createUser(user);
-    }
-
-    @PostMapping("/drivers")
-    public void createDriver(@RequestBody User user) {
-        userService.createDriver(user);
-    }
-
-    @PostMapping("/employees")
-    public void createEmployee(@RequestBody User user) {
-        userService.createEmployee(user);
-    }
-
-    @PostMapping("/admins")
-    public void createAdmin(@RequestBody User user) {
-        userService.createAdmin(user);
-    }
-
-    @DeleteMapping("/users")
-    public void deleteUserById(@RequestParam("id") Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
         userService.deleteUserById(id);
-    }
 
-    @DeleteMapping("/drivers")
-    public void deleteDriverById(@RequestParam("id") Long id) {
-        userService.deleteUserById(id);
-    }
-
-    @DeleteMapping("/employees")
-    public void deleteEmployeeById(@RequestParam("id") Long id) {
-        userService.deleteUserById(id);
-    }
-
-    @DeleteMapping("/admins")
-    public void deleteAdminById(@RequestParam("id") Long id) {
-        userService.deleteUserById(id);
-    }
-
-    @PutMapping("/users/{id}")
-    public void updateUser(@RequestBody User user, @PathVariable Long id) {
-        userService.updateUser(user, id);
-    }
-
-    @PutMapping("/drivers/{id}")
-    public void updateDriver(@RequestBody User user, @PathVariable Long id) {
-        userService.updateUser(user, id);
-    }
-
-    @PutMapping("/employees/{id}")
-    public void updateEmployee(@RequestBody User user, @PathVariable Long id) {
-        userService.updateUser(user, id);
-    }
-
-    @PutMapping("/admins/{id}")
-    public void updateAdmin(@RequestBody User user, @PathVariable Long id) {
-        userService.updateUser(user, id);
+        return ResponseEntity.noContent().build();
     }
 }

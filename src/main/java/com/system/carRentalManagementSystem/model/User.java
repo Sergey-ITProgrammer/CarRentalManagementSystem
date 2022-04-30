@@ -1,6 +1,5 @@
 package com.system.carRentalManagementSystem.model;
 
-import com.system.carRentalManagementSystem.role.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,13 +10,13 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
     @Getter
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,10 +24,6 @@ public class User implements Serializable {
     @Getter
     @Setter
     private String name;
-
-    @Getter
-    @Setter
-    private Role role = Role.USER;
 
     @Getter
     @Setter
@@ -42,22 +37,18 @@ public class User implements Serializable {
 
     @Getter
     @Setter
+    @Column(unique = true)
     private String emailAddress;
 
     @Getter
     @Setter
     private String DOB;
 
-    @Getter
-    @Setter
-    private String driverLicence;
-
-    public User(String name, String contactNo, String emailAddress, String DOB, String driverLicence) {
+    public User(String name, String contactNo, String emailAddress, String DOB) {
         this.name = name;
         this.contactNo = contactNo;
         this.emailAddress = emailAddress;
         this.DOB = DOB;
-        this.driverLicence = driverLicence;
     }
 
     public Boolean hasBooking(Long bookingId) {
@@ -71,5 +62,30 @@ public class User implements Serializable {
         }
 
         return hasBooking;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof User)) {
+            return false;
+        }
+
+        User that = (User) object;
+
+        return this.name.equals(that.name) && this.contactNo.equals(that.contactNo)
+                && this.emailAddress.equals(that.emailAddress) && this.DOB.equals(that.DOB);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + contactNo.hashCode();
+        result = 31 * result + emailAddress.hashCode();
+        result = 31 * result + DOB.hashCode();
+
+        return result;
     }
 }

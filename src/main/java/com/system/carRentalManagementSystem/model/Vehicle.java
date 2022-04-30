@@ -17,6 +17,7 @@ public class Vehicle implements Serializable {
 
     @Getter
     @Setter
+    @Column(unique = true)
     private String registrationNo;
 
     @Getter
@@ -24,23 +25,36 @@ public class Vehicle implements Serializable {
     private String modelNo;
 
     @Getter
-    private boolean hasDriver;
-
-    @Getter
+    @Setter
     private Boolean availability;
 
-    public Vehicle(String registrationNo, String modelNo, boolean hasDriver) {
+    public Vehicle(String registrationNo, String modelNo) {
         this.registrationNo = registrationNo;
         this.modelNo = modelNo;
         this.availability = true;
-        this.hasDriver = hasDriver;
     }
 
-    public void setAvailability() {
-        this.availability = true;
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof Vehicle)) {
+            return false;
+        }
+
+        Vehicle that = (Vehicle) object;
+
+        return this.registrationNo.equals(that.registrationNo) && this.modelNo.equals(that.modelNo)
+                && this.availability.equals(that.availability);
     }
 
-    public void setUnavailability() {
-        this.availability = false;
+    @Override
+    public int hashCode() {
+        int result = registrationNo.hashCode();
+        result = 31 * result + modelNo.hashCode();
+        result = 31 * result + availability.hashCode();
+
+        return result;
     }
 }

@@ -19,7 +19,7 @@ public class Booking implements Serializable {
     @Getter
     @Setter
     @OneToOne(optional = false, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(unique = true)
+    @JoinColumn(unique = true, nullable = false)
     private Vehicle vehicle;
 
     @Getter
@@ -34,22 +34,45 @@ public class Booking implements Serializable {
     @Getter
     private LocalDate endDate;
 
-    @Getter
     @Setter
-    private Boolean driverOptions;
-
-    @Getter
-    @Setter
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn
-    private User driver;
+    private Boolean hasDriver;
 
     public Booking(Boolean driverOptions, String endDate) {
-        this.driverOptions = driverOptions;
+        this.hasDriver = driverOptions;
 
         this.startDate = LocalDate.now();
 
         // PATTERN OF DATE: yyyy-MM-dd
         this.endDate = LocalDate.parse(endDate);
+    }
+
+    public boolean hasDriver() {
+        return hasDriver;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof Booking)) {
+            return false;
+        }
+
+        Booking that = (Booking) object;
+
+        return vehicle.equals(that.vehicle) && user.equals(that.user) && startDate.equals(that.startDate)
+                && endDate.equals(that.endDate) && hasDriver.equals(that.hasDriver);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = vehicle.hashCode();
+        result = 31 * result + user.hashCode();
+        result = 31 * result + startDate.hashCode();
+        result = 31 * result + endDate.hashCode();
+        result = 31 * result + hasDriver.hashCode();
+
+        return result;
     }
 }

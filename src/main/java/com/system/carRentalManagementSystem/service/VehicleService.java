@@ -21,11 +21,54 @@ public class VehicleService {
         return vehicleRepository.findAll();
     }
 
-    public void addVehicle(Vehicle vehicle) {
-        vehicleRepository.save(vehicle);
+    public Vehicle getVehicleById(Long vehicleId) {
+        Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
+
+        if (vehicle.isPresent()) {
+            return vehicle.get();
+        }
+
+        return null;
     }
 
-    public void deleteVehicle(Long vehicleId) {
+    public List<Vehicle> getAvailableVehicles() {
+        return vehicleRepository.findByAvailability(true);
+    }
+
+    public List<Vehicle> getUnavailableVehicles() {
+        return vehicleRepository.findByAvailability(false);
+    }
+
+    public Vehicle createVehicle(Vehicle vehicle) {
+        return vehicleRepository.save(vehicle);
+    }
+
+    public Vehicle updateAvailabilityById(Long vehicleId, boolean available) {
+        Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
+
+        if (vehicle.isPresent()) {
+            vehicle.get().setAvailability(available);
+
+            return vehicle.get();
+        }
+
+        return null;
+    }
+
+    public Vehicle updateVehicle(Vehicle newVehicle, Long vehicleId) {
+        Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
+
+        if (vehicle.isPresent()) {
+            vehicle.get().setRegistrationNo(newVehicle.getRegistrationNo());
+            vehicle.get().setModelNo(newVehicle.getModelNo());
+
+            return vehicleRepository.save(vehicle.get());
+        }
+
+        return null;
+    }
+
+    public void deleteVehicleById(Long vehicleId) {
         Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
 
         if (vehicle.isPresent()) {
