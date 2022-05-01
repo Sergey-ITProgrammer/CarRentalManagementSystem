@@ -39,11 +39,11 @@ public class BookingController {
         return bookingService.createBookingWithoutDriver(booking, userId, vehicleId);
     }
 
-//    @PostMapping("/{userId}/bookings")
-//    public Booking createBookingWithDriver(@RequestBody Booking booking, @PathVariable("userId") Long userId,
-//                                           @RequestParam("vehicleId") Long vehicleId, @RequestParam("driverId") Long driverId) {
-//        return bookingService.createBookingWithDriver(booking, userId, vehicleId, driverId);
-//    }
+    @PostMapping("/{userId}/bookings/withDriver")
+    public Booking createBookingWithDriver(@RequestBody Booking booking, @PathVariable("userId") Long userId,
+                                           @RequestParam("vehicleId") Long vehicleId, @RequestParam("driverId") Long driverId) {
+        return bookingService.createBookingWithDriver(booking, userId, vehicleId, driverId);
+    }
 
     @DeleteMapping("/{userId}/bookings/{bookingId}")
     public void deleteBooking(@PathVariable("userId") Long userId, @PathVariable("bookingId") Long bookingId) {

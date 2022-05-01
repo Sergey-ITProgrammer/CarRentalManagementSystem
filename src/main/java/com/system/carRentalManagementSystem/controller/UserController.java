@@ -45,6 +45,10 @@ public class UserController {
     public ResponseEntity<?> createUser(@RequestBody User user) {
         EntityModel<User> entityModel = modelAssembler.toModel(userService.createUser(user));
 
+        if (entityModel.getContent() == null) {
+            return ResponseEntity.badRequest().body("Bad request");
+        }
+
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
