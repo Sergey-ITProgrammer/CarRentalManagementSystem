@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -42,13 +43,15 @@ public class User implements Serializable {
 
     @Getter
     @Setter
-    private String DOB;
+    private LocalDate DOB;
 
     public User(String name, String contactNo, String emailAddress, String DOB) {
         this.name = name;
         this.contactNo = contactNo;
         this.emailAddress = emailAddress;
-        this.DOB = DOB;
+
+        // PATTERN OF DATE: yyyy-MM-dd
+        this.DOB = LocalDate.parse(DOB);
     }
 
     public Boolean hasBooking(Long bookingId) {
