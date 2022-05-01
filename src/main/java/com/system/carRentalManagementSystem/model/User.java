@@ -1,5 +1,6 @@
 package com.system.carRentalManagementSystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,11 +26,10 @@ public class User implements Serializable {
     @Getter
     @Setter
     private String name;
-
-    @Getter
-    @Setter
+    
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Collection<Booking> bookings = new ArrayList<>();
 
     @Getter
@@ -57,7 +57,7 @@ public class User implements Serializable {
     public Boolean hasBooking(Long bookingId) {
         boolean hasBooking = false;
 
-        for (Booking booking : getBookings()) {
+        for (Booking booking : this.bookings) {
             if (booking.getId().equals(bookingId)) {
                 hasBooking = true;
                 break;

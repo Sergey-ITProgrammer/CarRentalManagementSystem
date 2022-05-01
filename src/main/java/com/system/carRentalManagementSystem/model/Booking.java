@@ -1,5 +1,6 @@
 package com.system.carRentalManagementSystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,12 +21,14 @@ public class Booking implements Serializable {
     @Setter
     @OneToOne(optional = false, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(unique = true, nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Vehicle vehicle;
 
     @Getter
     @Setter
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
     @Getter
