@@ -22,15 +22,15 @@ public class Vehicle implements Serializable {
 
     @Getter
     @Setter
-    private String modelNo;
+    private String model;
 
     @Getter
     @Setter
     private Boolean availability;
 
-    public Vehicle(String registrationNo, String modelNo) {
+    public Vehicle(String registrationNo, String model) {
         this.registrationNo = registrationNo;
-        this.modelNo = modelNo;
+        this.model = model;
         this.availability = true;
     }
 
@@ -45,14 +45,14 @@ public class Vehicle implements Serializable {
 
         Vehicle that = (Vehicle) object;
 
-        return this.registrationNo.equals(that.registrationNo) && this.modelNo.equals(that.modelNo)
+        return this.registrationNo.equals(that.registrationNo) && this.model.equals(that.model)
                 && this.availability.equals(that.availability);
     }
 
     @Override
     public int hashCode() {
         int result = registrationNo.hashCode();
-        result = 31 * result + modelNo.hashCode();
+        result = 31 * result + model.hashCode();
         result = 31 * result + availability.hashCode();
 
         return result;

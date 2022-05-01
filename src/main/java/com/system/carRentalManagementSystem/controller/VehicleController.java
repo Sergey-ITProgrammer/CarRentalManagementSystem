@@ -1,6 +1,7 @@
 package com.system.carRentalManagementSystem.controller;
 
 import com.system.carRentalManagementSystem.model.Vehicle;
+import com.system.carRentalManagementSystem.modelAssembler.VehicleModelAssembler;
 import com.system.carRentalManagementSystem.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +13,12 @@ import java.util.List;
 public class VehicleController {
     private final VehicleService vehicleService;
 
+    private final VehicleModelAssembler modelAssembler;
+
     @Autowired
-    public VehicleController(VehicleService vehicleService) {
+    public VehicleController(VehicleService vehicleService, VehicleModelAssembler modelAssembler) {
         this.vehicleService = vehicleService;
+        this.modelAssembler = modelAssembler;
     }
 
     @GetMapping("")

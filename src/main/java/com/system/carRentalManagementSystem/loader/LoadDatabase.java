@@ -11,13 +11,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 class LoadDatabase {
 
-    private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
-
     @Bean
     CommandLineRunner initDatabase(UserRepository userRepository) {
 
         return args -> {
-
+            userRepository.save(new User("Sergey", "someCoNo", "tsbrbe@email.com", "2000-12-12"));
+            userRepository.save(new User("Sergey", "someCoNo", "tsbragrfae@email.com", "2000-04-23"));
+            userRepository.save(new User("Sergey", "someCoNo", "sefbrbe@email.com", "2000-05-04"));
         };
     }
 }

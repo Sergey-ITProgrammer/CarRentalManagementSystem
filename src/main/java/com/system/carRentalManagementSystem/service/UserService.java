@@ -50,8 +50,6 @@ public class UserService {
             u.setDOB(newUser.getDOB());
 
             return userRepository.save(u);
-        }).orElseGet(() -> {
-            return null;
-        });
+        }).orElseGet(() -> null);
     }
 }

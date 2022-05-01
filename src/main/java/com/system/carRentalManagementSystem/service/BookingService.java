@@ -62,6 +62,8 @@ public class BookingService {
             booking.setUser(user.get());
             booking.setVehicle(vehicle.get());
 
+            vehicle.get().setAvailability(false);
+
             return bookingRepository.save(booking);
         }
 
@@ -79,6 +81,8 @@ public class BookingService {
                 booking.setVehicle(vehicle.get());
                 driver.get().setBooking(booking);
 
+                vehicle.get().setAvailability(false);
+
                 return bookingRepository.save(booking);
             }
         }
@@ -92,6 +96,8 @@ public class BookingService {
 
         if(user.isPresent() && booking.isPresent()) {
             if (user.get().hasBooking(bookingId)) {
+                booking.get().getVehicle().setAvailability(true);
+
                 bookingRepository.deleteById(bookingId);
             }
         }

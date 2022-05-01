@@ -60,7 +60,7 @@ public class VehicleService {
 
         if (vehicle.isPresent()) {
             vehicle.get().setRegistrationNo(newVehicle.getRegistrationNo());
-            vehicle.get().setModelNo(newVehicle.getModelNo());
+            vehicle.get().setModel(newVehicle.getModel());
 
             return vehicleRepository.save(vehicle.get());
         }
