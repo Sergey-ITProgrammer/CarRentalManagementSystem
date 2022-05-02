@@ -1,7 +1,9 @@
 package com.system.carRentalManagementSystem.service;
 
+import com.system.carRentalManagementSystem.exception.BadRequestException;
 import com.system.carRentalManagementSystem.model.User;
 import com.system.carRentalManagementSystem.repository.UserRepository;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,32 +19,42 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @SneakyThrows
     public User getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
 
         if (user.isPresent()) {
             return user.get();
+        } else {
+            throw new BadRequestException("There is no such user!");
         }
-
-        return null;
     }
 
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
+    @SneakyThrows
     public User createUser(User user) {
+        if (user.getName() == null || user.getEmailAddress() == null || user.getDOB() == null) {
+            throw new BadRequestException("Name, email or DOB cannot be empty!");
+        }
+
         return userRepository.save(user);
     }
 
+    @SneakyThrows
     public void deleteUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
 
         if(user.isPresent()) {
             userRepository.deleteById(id);
+        } else {
+            throw new BadRequestException("There is no such user!");
         }
     }
 
+    @SneakyThrows
     public User updateUser(User newUser, Long id) {
         return userRepository.findById(id).map(u -> {
             u.setName(newUser.getName());
@@ -50,6 +62,6 @@ public class UserService {
             u.setDOB(newUser.getDOB());
 
             return userRepository.save(u);
-        }).orElseGet(() -> null);
+        }).orElseThrow(() -> new BadRequestException("There is no such user!"));
     }
 }
