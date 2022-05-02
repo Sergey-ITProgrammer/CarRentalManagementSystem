@@ -3,6 +3,7 @@ package com.system.carRentalManagementSystem.controller;
 import com.system.carRentalManagementSystem.model.User;
 import com.system.carRentalManagementSystem.modelAssembler.UserModelAssembler;
 import com.system.carRentalManagementSystem.service.UserService;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -23,13 +24,10 @@ public class UserController {
         this.modelAssembler = modelAssembler;
     }
 
+    @SneakyThrows
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         EntityModel<User> entityModel = modelAssembler.toModel(userService.getUserById(id));
-
-        if (entityModel.getContent() == null) {
-            return ResponseEntity.badRequest().body("Bad request");
-        }
 
         return ResponseEntity.ok(entityModel);
     }
@@ -41,13 +39,10 @@ public class UserController {
         return ResponseEntity.ok(entityModels);
     }
 
+    @SneakyThrows
     @PostMapping("")
     public ResponseEntity<?> createUser(@RequestBody User user) {
         EntityModel<User> entityModel = modelAssembler.toModel(userService.createUser(user));
-
-        if (entityModel.getContent() == null) {
-            return ResponseEntity.badRequest().body("Bad request");
-        }
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
@@ -55,10 +50,6 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable Long id) {
         EntityModel<User> entityModel = modelAssembler.toModel(userService.updateUser(user, id));
-
-        if (entityModel.getContent() == null) {
-            return ResponseEntity.badRequest().body("Bad request");
-        }
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
