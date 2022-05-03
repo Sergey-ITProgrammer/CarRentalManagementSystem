@@ -1,5 +1,7 @@
 package com.system.carRentalManagementSystem.service;
 
+import com.system.carRentalManagementSystem.exception.EntityNotPresentException;
+import com.system.carRentalManagementSystem.exception.NullDataException;
 import com.system.carRentalManagementSystem.model.Booking;
 import com.system.carRentalManagementSystem.model.Driver;
 import com.system.carRentalManagementSystem.model.User;
@@ -8,6 +10,7 @@ import com.system.carRentalManagementSystem.repository.BookingRepository;
 import com.system.carRentalManagementSystem.repository.DriverRepository;
 import com.system.carRentalManagementSystem.repository.UserRepository;
 import com.system.carRentalManagementSystem.repository.VehicleRepository;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +44,7 @@ public class BookingService {
         return bookingRepository.findByUserId(userId);
     }
 
+    @SneakyThrows
     public Booking getUserBookingById(Long userId, Long bookingId) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Booking> booking = bookingRepository.findById(bookingId);
@@ -48,13 +52,20 @@ public class BookingService {
         if (user.isPresent() && booking.isPresent()) {
             if (user.get().hasBooking(bookingId)) {
                 return booking.get();
+            } else {
+                throw new NullDataException("This user does not have such bookings!");
             }
+        } else {
+            throw new EntityNotPresentException("There is no such booking or user!");
         }
-
-        return null;
     }
 
+    @SneakyThrows
     public Booking createBookingWithoutDriver(Booking booking, Long userId, Long vehicleId) {
+        if (booking.getEndDate() == null) {
+            throw new NullDataException("End date cannot be empty!");
+        }
+
         Optional<User> user = userRepository.findById(userId);
         Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
 
@@ -65,11 +76,12 @@ public class BookingService {
             vehicle.get().setAvailability(false);
 
             return bookingRepository.save(booking);
+        } else {
+            throw new EntityNotPresentException("There is no such vehicle or user!");
         }
-
-        return null;
     }
 
+    @SneakyThrows
     public Booking createBookingWithDriver(Booking booking, Long userId, Long vehicleId, Long driverId) {
         if (booking.hasDriver()) {
             Optional<User> user = userRepository.findById(userId);
@@ -84,52 +96,78 @@ public class BookingService {
                 vehicle.get().setAvailability(false);
 
                 return bookingRepository.save(booking);
+            } else {
+                throw new EntityNotPresentException("There is no such user, vehicle or driver!");
             }
-        }
 
-        return null;
+        } else {
+            throw new NullDataException("This booking does not have driver!");
+        }
     }
 
+    @SneakyThrows
     public void deleteBooking(Long userId, Long bookingId) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Booking> booking = bookingRepository.findById(bookingId);
 
         if(user.isPresent() && booking.isPresent()) {
+
             if (user.get().hasBooking(bookingId)) {
                 booking.get().getVehicle().setAvailability(true);
 
                 bookingRepository.deleteById(bookingId);
+            } else {
+                throw new NullDataException("This user does not have such booking!");
             }
+
+        } else {
+            throw new EntityNotPresentException("There is no such booking or user!");
         }
     }
 
+    @SneakyThrows
     public Driver getDriver(Long userId, Long bookingId, Long driverId) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Booking> booking = bookingRepository.findById(bookingId);
         Optional<Driver> driver = driverRepository.findById(driverId);
 
         if (user.isPresent() && booking.isPresent() && driver.isPresent()) {
-            if (booking.get().hasDriver() && user.get().hasBooking(bookingId) && driver.get().getBooking().equals(booking.get())) {
-                return driver.get();
-            }
-        }
 
-        return null;
+            if (booking.get().hasDriver()) {
+
+                if (user.get().hasBooking(bookingId) && driver.get().getBooking().equals(booking.get())) {
+                    return driver.get();
+                } else {
+                    throw new NullDataException("This user does not have such booking or \n This driver have a different booking!");
+                }
+
+            } else {
+                throw new NullDataException("This booking does not have driver!");
+            }
+
+        } else {
+            throw new EntityNotPresentException("There is no such booking, user or driver!");
+        }
     }
 
+    @SneakyThrows
     public Driver setDriver(Long userId, Long bookingId, Long driverId) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Booking> booking = bookingRepository.findById(bookingId);
         Optional<Driver> driver = driverRepository.findById(driverId);
 
         if (user.isPresent() && booking.isPresent() && driver.isPresent()) {
-            if (user.get().hasBooking(bookingId) && user.get().hasBooking(bookingId)) {
+
+            if (user.get().hasBooking(bookingId)) {
                 driver.get().setBooking(booking.get());
 
                 return driverRepository.save(driver.get());
+            } else {
+                throw new NullDataException("This user does not have such booking!");
             }
-        }
 
-        return null;
+        } else {
+            throw new EntityNotPresentException("There is no such booking, user or driver!");
+        }
     }
 }
