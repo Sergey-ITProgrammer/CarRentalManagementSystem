@@ -1,7 +1,10 @@
 package com.system.carRentalManagementSystem.service;
 
+import com.system.carRentalManagementSystem.exception.EntityNotPresentException;
+import com.system.carRentalManagementSystem.exception.NullDataException;
 import com.system.carRentalManagementSystem.model.Vehicle;
 import com.system.carRentalManagementSystem.repository.VehicleRepository;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +24,15 @@ public class VehicleService {
         return vehicleRepository.findAll();
     }
 
+    @SneakyThrows
     public Vehicle getVehicleById(Long vehicleId) {
         Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
 
         if (vehicle.isPresent()) {
             return vehicle.get();
+        } else {
+            throw new EntityNotPresentException("There is no such vehicle!");
         }
-
-        return null;
     }
 
     public List<Vehicle> getAvailableVehicles() {
@@ -39,10 +43,16 @@ public class VehicleService {
         return vehicleRepository.findByAvailability(false);
     }
 
+    @SneakyThrows
     public Vehicle createVehicle(Vehicle vehicle) {
+        if (vehicle.getRegistrationNo() == null || vehicle.getModel() == null || vehicle.getAvailability() == null) {
+            throw new NullDataException("Registration number, model or availability cannot be empty!");
+        }
+
         return vehicleRepository.save(vehicle);
     }
 
+    @SneakyThrows
     public Vehicle updateAvailabilityById(Long vehicleId, boolean available) {
         Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
 
@@ -50,11 +60,12 @@ public class VehicleService {
             vehicle.get().setAvailability(available);
 
             return vehicle.get();
+        } else {
+            throw new EntityNotPresentException("There is no such vehicle!");
         }
-
-        return null;
     }
 
+    @SneakyThrows
     public Vehicle updateVehicle(Vehicle newVehicle, Long vehicleId) {
         Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
 
@@ -63,16 +74,19 @@ public class VehicleService {
             vehicle.get().setModel(newVehicle.getModel());
 
             return vehicleRepository.save(vehicle.get());
+        } else {
+            throw new EntityNotPresentException("There is no such vehicle!");
         }
-
-        return null;
     }
 
+    @SneakyThrows
     public void deleteVehicleById(Long vehicleId) {
         Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
 
         if (vehicle.isPresent()) {
             vehicleRepository.deleteById(vehicleId);
+        } else {
+            throw new EntityNotPresentException("There is no such vehicle!");
         }
     }
 }

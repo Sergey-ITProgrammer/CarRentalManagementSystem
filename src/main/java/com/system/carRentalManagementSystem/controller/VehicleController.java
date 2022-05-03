@@ -34,11 +34,7 @@ public class VehicleController {
     public ResponseEntity<?> getVehicleById(@PathVariable("vehicleId") Long vehicleId) {
         EntityModel<Vehicle> entityModel = modelAssembler.toModel(vehicleService.getVehicleById(vehicleId));
 
-        if(entityModel.getContent() == null) {
-            return ResponseEntity.badRequest().body("Bad request");
-        }
-
-        return ResponseEntity.ok(modelAssembler);
+        return ResponseEntity.ok(entityModel);
     }
 
     @GetMapping("/available")
@@ -59,10 +55,6 @@ public class VehicleController {
     public ResponseEntity<?> createVehicle(@RequestBody Vehicle vehicle) {
         EntityModel<Vehicle> entityModel = modelAssembler.toModel(vehicleService.createVehicle(vehicle));
 
-        if (entityModel.getContent() == null) {
-            return ResponseEntity.badRequest().body("Bad request");
-        }
-
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
@@ -70,20 +62,12 @@ public class VehicleController {
     public ResponseEntity<?> updateVehicle(@RequestBody Vehicle newVehicle, @PathVariable("vehicleId") Long vehicleId) {
         EntityModel<Vehicle> entityModel = modelAssembler.toModel(vehicleService.updateVehicle(newVehicle, vehicleId));
 
-        if (entityModel.getContent() == null) {
-            return ResponseEntity.badRequest().body("Bad request");
-        }
-
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
     @PatchMapping("/{vehicleId}")
     public ResponseEntity<?> updateAvailability(@PathVariable("vehicleId") Long vehicleId, @RequestParam boolean available) {
         EntityModel<Vehicle> entityModel = modelAssembler.toModel(vehicleService.updateAvailabilityById(vehicleId, available));
-
-        if (entityModel.getContent() == null) {
-            return ResponseEntity.badRequest().body("Bad request");
-        }
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
