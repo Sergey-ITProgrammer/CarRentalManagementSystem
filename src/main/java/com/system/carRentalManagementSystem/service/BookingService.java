@@ -126,17 +126,17 @@ public class BookingService {
     }
 
     @SneakyThrows
-    public Driver getDriver(Long userId, Long bookingId, Long driverId) {
+    public Driver getDriverByBookingId(Long userId, Long bookingId) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Booking> booking = bookingRepository.findById(bookingId);
-        Optional<Driver> driver = driverRepository.findById(driverId);
 
-        if (user.isPresent() && booking.isPresent() && driver.isPresent()) {
+        if (user.isPresent() && booking.isPresent()) {
+            Driver driver = driverRepository.findByBookingId(bookingId);
 
             if (booking.get().hasDriver()) {
 
-                if (user.get().hasBooking(bookingId) && driver.get().getBooking().equals(booking.get())) {
-                    return driver.get();
+                if (user.get().hasBooking(bookingId) && driver.getBooking().equals(booking.get())) {
+                    return driver;
                 } else {
                     throw new NullDataException("This user does not have such booking or \n This driver have a different booking!");
                 }
@@ -151,7 +151,7 @@ public class BookingService {
     }
 
     @SneakyThrows
-    public Driver setDriver(Long userId, Long bookingId, Long driverId) {
+    public Driver setDriverByBookingId(Long userId, Long bookingId, Long driverId) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Booking> booking = bookingRepository.findById(bookingId);
         Optional<Driver> driver = driverRepository.findById(driverId);
@@ -160,6 +160,7 @@ public class BookingService {
 
             if (user.get().hasBooking(bookingId)) {
                 driver.get().setBooking(booking.get());
+                booking.get().setHasDriver(true);
 
                 return driverRepository.save(driver.get());
             } else {
