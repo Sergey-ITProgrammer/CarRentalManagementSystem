@@ -7,8 +7,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ExceptionController {
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<?> handleException(BadRequestException e) {
+    @ExceptionHandler(EntityNotPresentException.class)
+    public ResponseEntity<?> handleException(EntityNotPresentException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NullDataException.class)
+    public ResponseEntity<?> handleException(NullDataException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

@@ -1,12 +1,14 @@
 package com.system.carRentalManagementSystem.service;
 
-import com.system.carRentalManagementSystem.exception.BadRequestException;
+import com.system.carRentalManagementSystem.exception.EntityNotPresentException;
+import com.system.carRentalManagementSystem.exception.NullDataException;
 import com.system.carRentalManagementSystem.model.User;
 import com.system.carRentalManagementSystem.repository.UserRepository;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +28,7 @@ public class UserService {
         if (user.isPresent()) {
             return user.get();
         } else {
-            throw new BadRequestException("There is no such user!");
+            throw new EntityNotPresentException("There is no such user!");
         }
     }
 
@@ -37,7 +39,7 @@ public class UserService {
     @SneakyThrows
     public User createUser(User user) {
         if (user.getName() == null || user.getEmailAddress() == null || user.getDOB() == null) {
-            throw new BadRequestException("Name, email or DOB cannot be empty!");
+            throw new NullDataException("Name, email or DOB cannot be empty!");
         }
 
         return userRepository.save(user);
@@ -50,7 +52,7 @@ public class UserService {
         if(user.isPresent()) {
             userRepository.deleteById(id);
         } else {
-            throw new BadRequestException("There is no such user!");
+            throw new EntityNotPresentException("There is no such user!");
         }
     }
 
@@ -62,6 +64,6 @@ public class UserService {
             u.setDOB(newUser.getDOB());
 
             return userRepository.save(u);
-        }).orElseThrow(() -> new BadRequestException("There is no such user!"));
+        }).orElseThrow(() -> new EntityNotPresentException("There is no such user!"));
     }
 }
