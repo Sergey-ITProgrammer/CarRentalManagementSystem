@@ -18,7 +18,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class BookingModelAssembler implements RepresentationModelAssembler<Booking, EntityModel<Booking>> {
     @Override
     public EntityModel<Booking> toModel(Booking entity) {
-        return null;
+        return EntityModel.of(entity,
+                linkTo(methodOn(BookingController.class).getBookingById(entity.getId())).withSelfRel(),
+                linkTo(methodOn(BookingController.class).getAllBookings()).withRel("bookings"));
     }
 
     public EntityModel<Booking> toModel(Booking entity, Long userId) {
@@ -42,10 +44,13 @@ public class BookingModelAssembler implements RepresentationModelAssembler<Booki
 
         List<EntityModel<Booking>> list = new ArrayList<>();
 
-            for (Booking b : entities) {
-                list.add(toModel(b, userId));
-            }
+        for (Booking b : entities) {
+            list.add(toModel(b, userId));
+        }
 
+        if (list.isEmpty()) {
+            return CollectionModel.empty();
+        }
 
         return CollectionModel.of(list, linkTo(methodOn(BookingController.class).getBookingsByUserId(userId)).withRel("bookings"));
     }

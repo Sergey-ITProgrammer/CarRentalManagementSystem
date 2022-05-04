@@ -40,6 +40,17 @@ public class BookingService {
         return bookingRepository.findAll();
     }
 
+    @SneakyThrows
+    public Booking getBookingById(Long bookingId) {
+        Optional<Booking> booking = bookingRepository.findById(bookingId);
+
+        if (booking.isPresent()) {
+            return booking.get();
+        } else {
+            throw new EntityNotPresentException("There is no such booking!");
+        }
+    }
+
     public List<Booking> getBookingsByUserId(Long userId) {
         return bookingRepository.findByUserId(userId);
     }

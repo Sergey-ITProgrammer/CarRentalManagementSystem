@@ -24,7 +24,6 @@ public class Booking implements Serializable {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Vehicle vehicle;
 
-    @Getter
     @Setter
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)

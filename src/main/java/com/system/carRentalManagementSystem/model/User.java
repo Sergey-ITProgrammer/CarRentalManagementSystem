@@ -10,8 +10,8 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor
 @Entity
@@ -26,11 +26,12 @@ public class User implements Serializable {
     @Getter
     @Setter
     private String name;
-    
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+
+    @Getter
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Collection<Booking> bookings = new ArrayList<>();
+    private Set<Booking> bookings = new HashSet<>();
 
     @Getter
     @Setter

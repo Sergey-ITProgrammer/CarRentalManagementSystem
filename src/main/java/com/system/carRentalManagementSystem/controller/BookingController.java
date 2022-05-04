@@ -31,6 +31,13 @@ public class BookingController {
         return ResponseEntity.ok(entityModels);
     }
 
+    @GetMapping("/bookings/{bookingId}")
+    public ResponseEntity<?> getBookingById(@PathVariable("bookingId") Long bookingId) {
+        EntityModel<Booking> entityModel = modelAssembler.toModel(bookingService.getBookingById(bookingId));
+
+        return ResponseEntity.ok(entityModel);
+    }
+
     @GetMapping("/{userId}/bookings")
     public ResponseEntity<?> getBookingsByUserId(@PathVariable("userId") Long userId) {
         CollectionModel<EntityModel<Booking>> entityModels = modelAssembler.toCollectionModel(bookingService.getBookingsByUserId(userId), userId);
