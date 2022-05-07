@@ -1,7 +1,7 @@
 package com.system.carRentalManagementSystem.modelAssembler;
 
-import com.system.carRentalManagementSystem.controller.VehicleController;
-import com.system.carRentalManagementSystem.model.Vehicle;
+import com.system.carRentalManagementSystem.controller.DriverController;
+import com.system.carRentalManagementSystem.model.Driver;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -11,17 +11,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class VehicleModelAssembler implements RepresentationModelAssembler<Vehicle, EntityModel<Vehicle>> {
+public class DriverModelAssembler implements RepresentationModelAssembler<Driver, EntityModel<Driver>> {
     @Override
-    public EntityModel<Vehicle> toModel(Vehicle entity) {
+    public EntityModel<Driver> toModel(Driver entity) {
         return EntityModel.of(entity,
-                linkTo(methodOn(VehicleController.class).getVehicleById(entity.getId())).withSelfRel(),
-                linkTo(methodOn(VehicleController.class).getAllVehicles()).withRel("vehicles"));
+                linkTo(methodOn(DriverController.class).getDriverById(entity.getId())).withSelfRel(),
+                linkTo(methodOn(DriverController.class).getDrivers()).withRel("drivers"));
     }
 
-
     @Override
-    public CollectionModel<EntityModel<Vehicle>> toCollectionModel(Iterable<? extends Vehicle> entities) {
+    public CollectionModel<EntityModel<Driver>> toCollectionModel(Iterable<? extends Driver> entities) {
         return RepresentationModelAssembler.super.toCollectionModel(entities);
     }
 }

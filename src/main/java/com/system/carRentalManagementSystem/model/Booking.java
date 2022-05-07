@@ -1,17 +1,15 @@
 package com.system.carRentalManagementSystem.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDate;
 
 @NoArgsConstructor
 @Entity
-public class Booking implements Serializable {
+public class Booking {
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,13 +19,11 @@ public class Booking implements Serializable {
     @Setter
     @OneToOne(optional = false, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(unique = true, nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Vehicle vehicle;
 
     @Setter
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
     @Getter
