@@ -95,6 +95,10 @@ public class BookingService {
     @SneakyThrows
     public Booking createBookingWithDriver(Booking booking, Long userId, Long vehicleId, Long driverId) {
         if (booking.hasDriver()) {
+            if (booking.getEndDate() == null) {
+                throw new NullDataException("End date cannot be empty!");
+            }
+
             Optional<User> user = userRepository.findById(userId);
             Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
             Optional<Driver> driver = driverRepository.findById(driverId);
