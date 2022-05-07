@@ -1,44 +1,60 @@
 package com.system.carRentalManagementSystem.controller;
 
 import com.system.carRentalManagementSystem.model.Driver;
+import com.system.carRentalManagementSystem.modelAssembler.DriverModelAssembler;
 import com.system.carRentalManagementSystem.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/drivers")
 public class DriverController {
     private final DriverService driverService;
 
+    private final DriverModelAssembler modelAssembler;
+
     @Autowired
-    public DriverController(DriverService driverService) {
+    public DriverController(DriverService driverService, DriverModelAssembler modelAssembler) {
         this.driverService = driverService;
+        this.modelAssembler = modelAssembler;
     }
 
     @GetMapping("/{id}")
-    public Driver getDriverById(@PathVariable Long id) {
-        return driverService.getDriverById(id);
+    public ResponseEntity<?> getDriverById(@PathVariable Long id) {
+        EntityModel<Driver> entityModel = modelAssembler.toModel(driverService.getDriverById(id));
+
+        return ResponseEntity.ok(entityModel);
     }
 
     @GetMapping("")
-    public List<Driver> getDrivers() {
-        return driverService.getDrivers();
+    public ResponseEntity<?> getDrivers() {
+        CollectionModel<EntityModel<Driver>> entityModels = modelAssembler.toCollectionModel(driverService.getDrivers());
+
+        return ResponseEntity.ok(entityModels);
     }
 
     @PostMapping("")
-    public void createDriver(@RequestBody Driver driver) {
-        driverService.createDriver(driver);
+    public ResponseEntity<?> createDriver(@RequestBody Driver driver) {
+        EntityModel<Driver> entityModel = modelAssembler.toModel(driverService.createDriver(driver));
+
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
     @PutMapping("/{id}")
-    public void updateDriver(@RequestBody Driver driver, @PathVariable Long id) {
-        driverService.updateDriver(driver, id);
+    public ResponseEntity<?> updateDriver(@RequestBody Driver driver, @PathVariable Long id) {
+        EntityModel<Driver> entityModel = modelAssembler.toModel(driverService.updateDriver(driver, id));
+
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteDriver(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteDriver(@PathVariable("id") Long id) {
         driverService.deleteDriverById(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
